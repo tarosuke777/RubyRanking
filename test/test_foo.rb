@@ -1,18 +1,22 @@
-require 'test/unit'
-require '../lib/foo'
+# frozen_string_literal: true
 
-class TC_Foo < Test::Unit::TestCase
+require 'test/unit'
+require '../lib/main'
+
+class TcMain < Test::Unit::TestCase
   def setup
-    @obj = Foo.new
+    @obj = Main.new
   end
 
   # def teardown
   # end
 
   def test_foo
-    assert_equal("foo", @obj.foo)
+    out = File.read('../testdata/ranking/out/success.csv')
+    assert_equal(out, @obj.foo)
   end
+
   def test_bar
-    assert_equal("bar", @obj.bar)
+    assert_equal('bar', @obj.bar)
   end
 end
