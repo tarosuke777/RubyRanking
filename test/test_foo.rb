@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require 'test/unit'
+require 'minitest/autorun'
 require '../lib/main'
 
-class TcMain < Test::Unit::TestCase
+class TcMain < MiniTest::Test
   def setup
     @obj = Main.new
   end
 
-  # def teardown
-  # end
+  def teardown
+  end
 
   def test_foo
     out = File.read('../testdata/ranking/out/success.csv')
-    assert_equal(out, @obj.foo)
+    assert_output(out) { @obj.foo }
   end
 
   def test_bar

@@ -3,7 +3,7 @@
 # Main Class
 class Main
   def foo
-    'foo'
+    puts 'foo'
   end
 
   def bar
