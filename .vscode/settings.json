@@ -1,0 +1,4 @@
+{
+  "solargraph.autoformat": true
+  "ruby.rubocop.executePath": "/home/t-ohsuga/.rbenv/shims/"
+}
