@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 def ranking
   dir = File.expand_path('..', __dir__)
-  entry_log = File.open("#{dir}/testdata/ranking/in/game_ently_log.csv")
 
   entry_id_to_name = {}
-  entry_log.each_line do |line|
-    values = line.split(',')
-    entry_id_to_name.store(values[0], values[1])
+  CSV.foreach("#{dir}/testdata/ranking/in/game_ently_log.csv", headers: true) do |row|
+    entry_id_to_name.store(row['player_id'], row['handle_name'])
   end
 
   puts entry_id_to_name
