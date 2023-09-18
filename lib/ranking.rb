@@ -21,7 +21,32 @@ def ranking
   end
 
   player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
-  p player_id_to_score_sorted
+
+  prev_score = 0
+  rank = 0
+  out_rank = 0
+  ranking_data = []
+
+  player_id_to_score_sorted.each do |key, value|
+    player_id = key
+    handle_name = player_id_to_score[player_id]
+    score = value
+
+    next if handle_name == ''
+
+    rank += 1
+
+    out_rank = rank if score != prev_score
+
+    break if out_rank > 10
+
+    ranking_data.push("#{out_rank},#{player_id},#{handle_name},#{score}")
+    prev_score = score
+  end
+
+  ranking_data.each do |value|
+    p value
+  end
 end
 
 ranking
