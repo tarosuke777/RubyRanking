@@ -2,47 +2,61 @@
 
 require 'csv'
 
-dir = File.expand_path('..', __dir__)
-
-player_id_to_name = {}
-CSV.foreach("#{dir}/#{ARGV[0]}", headers: true) do |row|
-  player_id_to_name.store(row['player_id'], row['handle_name'])
-end
-
-player_id_to_score = {}
-CSV.foreach("#{dir}/#{ARGV[1]}", headers: true) do |row|
-  if player_id_to_score.key(row['player_id'])
-    score = player_id_to_score.fetch(row['player_id'])
-    player_id_to_score.store(row['player_id'], row['score']) if score < row['score'].to_i
-  else
-    player_id_to_score.store(row['player_id'], row['score'].to_i)
+def get_player_id_to_name(entry_log_file)
+  player_id_to_name = {}
+  CSV.foreach(entry_log_file, headers: true) do |row|
+    player_id_to_name.store(row['player_id'], row['handle_name'])
   end
+  player_id_to_name
 end
 
-player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
-
-prev_score = 0
-rank = 0
-out_rank = 0
-ranking_data = []
-
-player_id_to_score_sorted.each do |key, value|
-  player_id = key
-  handle_name = player_id_to_score[player_id]
-  score = value
-
-  next if handle_name == ''
-
-  rank += 1
-
-  out_rank = rank if score != prev_score
-
-  break if out_rank > 10
-
-  ranking_data.push("#{out_rank},#{player_id},#{handle_name},#{score}")
-  prev_score = score
+def get_player_id_to_score(score_log_file)
+  player_id_to_score = {}
+  CSV.foreach(score_log_file, headers: true) do |row|
+    score = player_id_to_score.fetch(row['player_id']) if player_id_to_score.key(row['player_id'])
+    player_id_to_score.store(row['player_id'], row['score'].to_i) if score.nil? || score < row['score'].to_i
+  end
+  player_id_to_score
 end
 
-ranking_data.each do |value|
-  p value
+def get_ranking_data(player_id_to_name, player_id_to_score_sorted)
+  prev_score = 0
+  rank = 0
+  out_rank = 0
+  ranking_data = []
+
+  player_id_to_score_sorted.each do |key, value|
+    player_id = key
+    handle_name = player_id_to_name[player_id]
+    score = value
+
+    next if handle_name == ''
+
+    rank += 1
+
+    out_rank = rank if score != prev_score
+
+    break if out_rank > 10
+
+    ranking_data.push("#{out_rank},#{player_id},#{handle_name},#{score}")
+    prev_score = score
+  end
+
+  ranking_data
 end
+
+def out_ranking(ranking_data)
+  ranking_data.each { |value| p value }
+end
+
+def main(_entry_log_file, _score_log_file)
+  dir = File.expand_path('..', __dir__)
+  player_id_to_name = get_player_id_to_name("#{dir}/#{ARGV[0]}")
+  player_id_to_score = get_player_id_to_score("#{dir}/#{ARGV[1]}")
+  player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
+  ranking_data = get_ranking_data(player_id_to_name, player_id_to_score_sorted)
+  out_ranking(ranking_data)
+end
+
+dir = File.expand_path('..', __dir__)
+main("#{dir}/#{ARGV[0]}", "#{dir}/#{ARGV[1]}")
