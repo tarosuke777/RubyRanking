@@ -24,24 +24,16 @@ def get_ranking_data(player_id_to_name, player_id_to_score_sorted)
   rank = 0
   out_rank = 0
   ranking_data = []
-
-  player_id_to_score_sorted.each do |key, value|
-    player_id = key
-    handle_name = player_id_to_name[player_id]
-    score = value
-
-    next if handle_name == ''
+  player_id_to_score_sorted.each do |player_id, score|
+    next if player_id_to_name[player_id] == ''
 
     rank += 1
-
     out_rank = rank if score != prev_score
-
     break if out_rank > 10
 
-    ranking_data.push("#{out_rank},#{player_id},#{handle_name},#{score}")
+    ranking_data.push("#{out_rank},#{player_id},#{player_id_to_name[player_id]},#{score}")
     prev_score = score
   end
-
   ranking_data
 end
 
@@ -49,14 +41,9 @@ def out_ranking(ranking_data)
   ranking_data.each { |value| p value }
 end
 
-def main(_entry_log_file, _score_log_file)
-  dir = File.expand_path('..', __dir__)
-  player_id_to_name = get_player_id_to_name("#{dir}/#{ARGV[0]}")
-  player_id_to_score = get_player_id_to_score("#{dir}/#{ARGV[1]}")
-  player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
-  ranking_data = get_ranking_data(player_id_to_name, player_id_to_score_sorted)
-  out_ranking(ranking_data)
-end
-
 dir = File.expand_path('..', __dir__)
-main("#{dir}/#{ARGV[0]}", "#{dir}/#{ARGV[1]}")
+player_id_to_name = get_player_id_to_name("#{dir}/#{ARGV[0]}")
+player_id_to_score = get_player_id_to_score("#{dir}/#{ARGV[1]}")
+player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
+ranking_data = get_ranking_data(player_id_to_name, player_id_to_score_sorted)
+out_ranking(ranking_data)
