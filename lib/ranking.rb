@@ -42,8 +42,14 @@ def out_ranking(ranking_data)
 end
 
 dir = File.expand_path('..', __dir__)
-player_id_to_name = get_player_id_to_name("#{dir}/#{ARGV[0]}")
-player_id_to_score = get_player_id_to_score("#{dir}/#{ARGV[1]}")
+entry_log_file_path =  "#{dir}/#{ARGV[0]}"
+score_log_file_path =  "#{dir}/#{ARGV[1]}"
+
+raise 'entry_log_file_path not exists' unless FileTest.exist?(entry_log_file_path)
+raise 'score_log_file_path not exists' unless FileTest.exist?(score_log_file_path)
+
+player_id_to_name = get_player_id_to_name(entry_log_file_path)
+player_id_to_score = get_player_id_to_score(score_log_file_path)
 player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
 ranking_data = get_ranking_data(player_id_to_name, player_id_to_score_sorted)
 out_ranking(ranking_data)
