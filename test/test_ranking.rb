@@ -4,9 +4,11 @@ require 'minitest/autorun'
 require_relative '../lib/ranking'
 
 class TcMain < MiniTest::Test
-  def test_ranking
+  def test_main
     dir = File.expand_path('..', __dir__)
     out = File.open("#{dir}/testdata/ranking/out/success.csv")
-    assert_output(out.read) { ranking }
+
+    args = ['testdata/ranking/in/game_ently_log.csv', 'testdata/ranking/in/game_score_log.csv']
+    assert_output(out.read) { main(args) }
   end
 end

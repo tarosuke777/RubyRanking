@@ -41,15 +41,21 @@ def out_ranking(ranking_data)
   ranking_data.each { |value| p value }
 end
 
-dir = File.expand_path('..', __dir__)
-entry_log_file_path =  "#{dir}/#{ARGV[0]}"
-score_log_file_path =  "#{dir}/#{ARGV[1]}"
+def validate(entry_log_file_path, score_log_file_path)
+  raise 'entry_log_file_path not exists' unless FileTest.exist?(entry_log_file_path)
+  raise 'score_log_file_path not exists' unless FileTest.exist?(score_log_file_path)
+end
 
-raise 'entry_log_file_path not exists' unless FileTest.exist?(entry_log_file_path)
-raise 'score_log_file_path not exists' unless FileTest.exist?(score_log_file_path)
+def main(args)
+  dir = File.expand_path('..', __dir__)
+  entry_log_file_path =  "#{dir}/#{args[0]}"
+  score_log_file_path =  "#{dir}/#{args[1]}"
 
-player_id_to_name = get_player_id_to_name(entry_log_file_path)
-player_id_to_score = get_player_id_to_score(score_log_file_path)
-player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
-ranking_data = get_ranking_data(player_id_to_name, player_id_to_score_sorted)
-out_ranking(ranking_data)
+  validate(entry_log_file_path, score_log_file_path)
+
+  player_id_to_name = get_player_id_to_name(entry_log_file_path)
+  player_id_to_score = get_player_id_to_score(score_log_file_path)
+  player_id_to_score_sorted = player_id_to_score.sort_by { |_, v| -v }.to_h
+  ranking_data = get_ranking_data(player_id_to_name, player_id_to_score_sorted)
+  out_ranking(ranking_data)
+end
