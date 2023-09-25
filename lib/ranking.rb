@@ -38,7 +38,8 @@ def get_ranking_data(player_id_to_name, player_id_to_score_sorted)
 end
 
 def out_ranking(ranking_data)
-  ranking_data.each { |value| p value }
+  puts 'rank,player_id,handle_name,score'
+  ranking_data.each { |value| puts value }
 end
 
 def validate(entry_log_file_path, score_log_file_path)
